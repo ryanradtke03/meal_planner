@@ -1,8 +1,13 @@
 {
-  "name": "meal_planner",
-  "private": true,
-  "scripts": {
-    "dev": "pnpm -r dev",
-    "build": "pnpm -r build"
+    "name": "meal_planner",
+    "private": true,
+    "workspaces": [
+      "apps/*",
+      "packages/*"
+    ],
+    "scripts": {
+      "dev:api": "npm --workspace apps/api run dev",
+      "build:api": "npm --workspace apps/api run build",
+      "start:api": "npm --workspace apps/api run start"
+    }
   }
-}
