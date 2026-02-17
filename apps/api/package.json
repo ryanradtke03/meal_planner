@@ -4,18 +4,24 @@
     "type": "commonjs",
     "main": "dist/index.js",
     "scripts": {
-      "dev": "ts-node-dev --respawn --transpile-only --watch src src/index.ts",
-      "build": "tsc -p tsconfig.json",
-      "start": "node dist/index.js"
+        "dev": "ts-node-dev --respawn --transpile-only --watch src src/index.ts",
+        "build": "tsc -p tsconfig.json",
+        "start": "node dist/index.js",
+        "db:migrate": "prisma migrate dev",
+        "db:deploy": "prisma migrate deploy",
+        "db:studio": "prisma studio",
+        "prisma:generate": "prisma generate"
     },
     "dependencies": {
-      "dotenv": "^16.4.5",
-      "express": "^4.19.2"
+        "@prisma/client": "^7.4.0",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2"
     },
     "devDependencies": {
-      "@types/express": "^4.17.21",
-      "@types/node": "^20.11.30",
-      "ts-node-dev": "^2.0.0",
-      "typescript": "^5.4.5"
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.11.30",
+        "prisma": "^7.4.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.4.5"
     }
-  }
+}
