@@ -7,9 +7,6 @@ Start the database:
 ```bash
 docker compose up -d
 # or: npm run db:up
-TODO:
-- add instructions on how to setup environment to run app
-- Add explanation of the apps functionality and features
 
 
 ## Database & Migrations (Prisma)
@@ -33,3 +30,20 @@ npm run db:reset
 ### Prisma Studio
 npm run db:studio
 ```
+
+## Environment Variables
+
+This repo uses per-app environment files.
+
+### Backend (apps/api)
+
+1. Copy:
+   - `apps/api/.env.example` → `apps/api/.env`
+
+2. Required variables:
+   - `DATABASE_URL` (Postgres connection string)
+   - `PORT` (API port)
+
+Example `DATABASE_URL`:
+```txt
+postgresql://postgres:postgres@localhost:5432/meal_planner?schema=public

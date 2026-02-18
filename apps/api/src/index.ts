@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { createApp } from "./app";
 import { envInt } from "./config/env";
 import { prisma } from "./db/prisma";
