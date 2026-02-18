@@ -14,7 +14,7 @@
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.0",
