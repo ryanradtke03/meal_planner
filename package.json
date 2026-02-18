@@ -15,7 +15,9 @@
     "db:logs": "docker compose logs -f postgres",
     "db:reset": "docker compose down -v",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces"
   },
   "devDependencies": {
     "eslint": "^9.39.2"
