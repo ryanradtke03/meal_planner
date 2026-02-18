@@ -3,6 +3,7 @@
 ## Local Postgres (Docker)
 
 Start the database:
+
 ```bash
 docker compose up -d
 # or: npm run db:up
@@ -31,3 +32,4 @@ npm run db:reset
 
 ### Prisma Studio
 npm run db:studio
+```
