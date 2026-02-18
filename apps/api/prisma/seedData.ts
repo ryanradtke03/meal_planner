@@ -1,0 +1,61 @@
+export const demoRecipes = [
+    {
+      title: "Honey Lemon Chicken",
+      description: "Bright, sticky, weeknight-friendly.",
+      servings: 4,
+      minutes: 30,
+      ingredients: [
+        { name: "Chicken thighs", quantity: "1.5 lb" },
+        { name: "Honey", quantity: "2 tbsp" },
+        { name: "Lemon", quantity: "1 (juice + zest)" },
+        { name: "Garlic", quantity: "3 cloves" },
+        { name: "Thyme", quantity: "1 tsp" },
+        { name: "Salt", quantity: "to taste" },
+      ],
+      steps: [
+        "Season chicken with salt.",
+        "Sear chicken until browned.",
+        "Add garlic, honey, lemon, thyme; simmer to glaze.",
+        "Serve with rice or roasted potatoes.",
+      ],
+    },
+    {
+      title: "Sheet Pan Salmon + Broccoli",
+      description: "One pan, minimal cleanup.",
+      servings: 2,
+      minutes: 20,
+      ingredients: [
+        { name: "Salmon", quantity: "2 fillets" },
+        { name: "Broccoli", quantity: "1 head" },
+        { name: "Olive oil", quantity: "1.5 tbsp" },
+        { name: "Garlic powder", quantity: "1 tsp" },
+        { name: "Lemon", quantity: "1" },
+        { name: "Salt", quantity: "to taste" },
+      ],
+      steps: [
+        "Heat oven to 425°F.",
+        "Toss broccoli with oil + seasonings.",
+        "Bake 10 min, add salmon, bake 8–10 min more.",
+        "Finish with lemon.",
+      ],
+    },
+    {
+      title: "Turkey Taco Bowls",
+      description: "Meal-prep friendly bowls.",
+      servings: 4,
+      minutes: 25,
+      ingredients: [
+        { name: "Ground turkey", quantity: "1 lb" },
+        { name: "Taco seasoning", quantity: "2 tbsp" },
+        { name: "Rice", quantity: "2 cups cooked" },
+        { name: "Black beans", quantity: "1 can" },
+        { name: "Salsa", quantity: "1/2 cup" },
+        { name: "Greek yogurt", quantity: "as topping" },
+      ],
+      steps: [
+        "Brown turkey, add seasoning + splash of water.",
+        "Warm beans, prep rice.",
+        "Assemble bowls with salsa + toppings.",
+      ],
+    },
+  ] as const;
