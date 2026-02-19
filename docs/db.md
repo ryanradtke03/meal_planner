@@ -61,3 +61,15 @@ Typical development flow:
 - Use indices when performance requires it
 
 This document should reflect the actual schema as it evolves.
+
+## Seeding Demo Data
+
+Currently includes a seed script scaffold.
+
+Run:
+
+npm run db:seed
+
+Future:
+- Will insert at least 3 demo recipes
+- Used for local development + portfolio screenshots
