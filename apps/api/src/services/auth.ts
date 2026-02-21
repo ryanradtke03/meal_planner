@@ -1,12 +1,11 @@
 import bcrypt from "bcrypt";
+import type { CookieOptions } from "express";
+import * as jwt from "jsonwebtoken";
 import { prisma } from "../db/prisma";
 
 const SALT_ROUNDS = 12;
 
-export async function registerUser(data: {
-  email: string;
-  password: string;
-}) {
+export async function registerUser(data: { email: string; password: string }) {
   const existingUser = await prisma.user.findUnique({
     where: { email: data.email },
   });
@@ -25,4 +24,83 @@ export async function registerUser(data: {
   });
 
   return user;
+}
+
+type LoginInput = {
+  email: string;
+  password: string;
+};
+
+type PublicUser = {
+  id: string;
+  email: string;
+};
+
+function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
+
+function requireEnv(key: string): string {
+  const v = process.env[key];
+  if (!v) throw new Error(`Missing ${key}`);
+  return v;
+}
+
+export async function loginUser(input: LoginInput): Promise<{
+  user: PublicUser;
+  cookie: {
+    name: string;
+    value: string;
+    options: CookieOptions;
+  };
+}> {
+  // Grab and normalize email
+  const email = normalizeEmail(input.email);
+
+  // Find user by email
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, email: true, passwordHash: true },
+  });
+
+  // If no user, throw generic error
+  if (!user) {
+    throw Object.assign(new Error("Invalid email or password"), {
+      status: 401,
+    });
+  }
+
+  const ok = await bcrypt.compare(input.password, user.passwordHash);
+
+  if (!ok) {
+    throw Object.assign(new Error("Invalid email or password"), {
+      status: 401,
+    });
+  }
+
+  const secret: jwt.Secret = requireEnv("JWT_SECRET");
+  const expiresIn: jwt.SignOptions["expiresIn"] = (process.env.JWT_EXPIRES_IN ??
+    "7d") as jwt.SignOptions["expiresIn"];
+
+  const token = jwt.sign({ sub: user.id, email: user.email }, secret, {
+    expiresIn,
+  });
+
+  const isProd = process.env.NODE_ENV === "production";
+
+  return {
+    user: { id: user.id, email: user.email },
+    cookie: {
+      name: "token",
+      value: token,
+      options: {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: "lax",
+        path: "/",
+        // optional: set a maxAge if you want cookie expiry aligned
+        // maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
+    },
+  };
 }

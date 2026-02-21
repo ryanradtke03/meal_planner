@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { registerUser } from "../services/auth";
+import { loginUser, registerUser } from "../services/auth";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -36,6 +36,37 @@ export async function register(req: Request, res: Response) {
 
     return res.status(400).json({
       error: "Registration Error",
+    });
+  }
+}
+
+export async function login(req: Request, res: Response) {
+  try {
+    const { email, password } = req.body ?? {};
+
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({
+        error: "Invalid body",
+      });
+    }
+
+    const result = await loginUser({ email, password });
+
+    // Set cookie
+    res.cookie(result.cookie.name, result.cookie.value, result.cookie.options);
+
+    return res.status(200).json({
+      user: result.user,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(400).json({
+        error: error.message || "Login Error",
+      });
+    }
+
+    return res.status(400).json({
+      error: "Login Error",
     });
   }
 }
