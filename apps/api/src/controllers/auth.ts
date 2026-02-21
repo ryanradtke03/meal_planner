@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { z } from "zod";
 import { loginUser, registerUser } from "../services/auth";
 
@@ -40,7 +40,7 @@ export async function register(req: Request, res: Response) {
   }
 }
 
-export async function login(req: Request, res: Response, next: NextFunction) {
+export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body ?? {};
 
