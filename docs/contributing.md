@@ -16,4 +16,29 @@ Guidelines for working in this repository.
 - Branch name format:
   - `MEA-<number>-short-description`
 
-Example:
+Example: MEA-7-linter-formatter
+
+## Pull Requests
+
+- Keep PRs small
+- Reference Linear issue
+- Ensure:
+  - Backend runs
+  - Frontend runs
+  - No type errors
+  - Lint passes (if configured)
+
+## Commit Message Style
+
+Examples:
+feat(api): add recipe endpoint
+feat(web): implement meal plan page
+chore(docs): update architecture section
+fix(api): correct validation logic
+
+## Documentation Rule
+
+If you introduce:
+- A new endpoint → update `api.md`
+- A schema change → update `db.md`
+- A structural decision → update `architecture.md`
