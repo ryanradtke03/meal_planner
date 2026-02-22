@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 
-type ErrorWithStatus = {
+type ErrorLike = {
   status?: number;
   message?: string;
+  type?: string;
 };
 
 export function errorHandler(
@@ -11,18 +12,24 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  const e = err as ErrorWithStatus;
+  const e = err as ErrorLike;
+
+  // JSON parsing error from express.json()
+  if (e.type === "entity.parse.failed") {
+    return res.status(400).json({
+      error: "Invalid JSON body",
+    });
+  }
 
   const status = typeof e.status === "number" ? e.status : 500;
 
+  // Log only real server errors
   if (status >= 500) {
     console.error(err);
   }
 
-  if (status === 401) {
-    // Don't leak details
-    return res.status(401).json({ error: "Invalid email or password" });
-  }
-
-  return res.status(status).json({ error: "Internal server error" });
+  return res.status(status).json({
+    error:
+      status >= 500 ? "Internal server error" : (e.message ?? "Bad Request"),
+  });
 }
