@@ -11,18 +11,20 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  const e = err as ErrorWithStatus;
+  const e = err as { status?: number; message?: string };
 
   const status = typeof e.status === "number" ? e.status : 500;
+
+   return res.status(400).json({
+      error: "Invalid JSON body",
+    });
+  }
 
   if (status >= 500) {
     console.error(err);
   }
 
-  if (status === 401) {
-    // Don't leak details
-    return res.status(401).json({ error: "Invalid email or password" });
-  }
-
-  return res.status(status).json({ error: "Internal server error" });
+  return res.status(status).json({
+    error: e.message ?? "Internal server error",
+  });
 }

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { loginUser, registerUser } from "../services/auth";
 
@@ -40,7 +40,7 @@ export async function register(req: Request, res: Response) {
   }
 }
 
-export async function login(req: Request, res: Response) {
+export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body ?? {};
 
@@ -59,14 +59,20 @@ export async function login(req: Request, res: Response) {
       user: result.user,
     });
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      return res.status(400).json({
-        error: error.message || "Login Error",
-      });
+    next(error);
+  }
+}
+
+export async function me(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!req.user) {
+      throw Object.assign(new Error("Not authenticated"), { status: 401 });
     }
 
-    return res.status(400).json({
-      error: "Login Error",
-    });
+    return res
+      .status(200)
+      .json({ user: { id: req.user.id, email: req.user.email } });
+  } catch (error: unknown) {
+    next(error);
   }
 }

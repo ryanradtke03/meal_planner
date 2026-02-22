@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import type { CookieOptions } from "express";
 import * as jwt from "jsonwebtoken";
+import { requireEnv } from "../config/env";
 import { prisma } from "../db/prisma";
 
 const SALT_ROUNDS = 12;
@@ -38,12 +39,6 @@ type PublicUser = {
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
-}
-
-function requireEnv(key: string): string {
-  const v = process.env[key];
-  if (!v) throw new Error(`Missing ${key}`);
-  return v;
 }
 
 export async function loginUser(input: LoginInput): Promise<{
