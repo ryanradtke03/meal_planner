@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { loginUser, registerUser } from "../services/auth";
 
@@ -7,10 +7,22 @@ const registerSchema = z.object({
   password: z.string().min(8),
 });
 
-export async function register(req: Request, res: Response) {
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+function httpError(status: number, message: string) {
+  return Object.assign(new Error(message), { status });
+}
+
+export async function register(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const parsed = registerSchema.parse(req.body);
-
     const user = await registerUser(parsed);
 
     return res.status(201).json({
@@ -20,59 +32,44 @@ export async function register(req: Request, res: Response) {
         createdAt: user.createdAt,
       },
     });
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        error: "Invalid request body",
-        details: error.flatten(),
-      });
-    }
-
-    if (error instanceof Error) {
-      return res.status(400).json({
-        error: error.message || "Registration Error",
-      });
-    }
-
-    return res.status(400).json({
-      error: "Registration Error",
-    });
+  } catch (err) {
+    return next(err);
   }
 }
 
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {
-    const { email, password } = req.body ?? {};
+    const parsed = loginSchema.parse(req.body);
 
-    if (typeof email !== "string" || typeof password !== "string") {
-      return res.status(400).json({
-        error: "Invalid body",
-      });
-    }
+    const result = await loginUser(parsed);
 
-    const result = await loginUser({ email, password });
-
-    // Set cookie
     res.cookie(result.cookie.name, result.cookie.value, result.cookie.options);
 
     return res.status(200).json({
       user: result.user,
     });
-  } catch (error: unknown) {
-    next(error);
+  } catch (err) {
+    // Keep login errors generic at the edge
+    if (err instanceof z.ZodError) {
+      return next(httpError(400, "Invalid request body"));
+    }
+    return next(err);
   }
 }
 
 export async function me(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.user) {
-      throw Object.assign(new Error("Not authenticated"), { status: 401 });
+      throw httpError(401, "Not authenticated");
     }
 
-    return res
-      .status(200)
-      .json({ user: { id: req.user.id, email: req.user.email } });
-  } catch (error: unknown) {
-    next(error);
+    return res.status(200).json({
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+      },
+    });
+  } catch (err) {
+    return next(err);
   }
 }
