@@ -29,7 +29,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     };
 
     return next();
-  } catch (error: unknown) {
+  } catch {
     return next(Object.assign(new Error("Not authenticated"), { status: 401 }));
   }
 }
