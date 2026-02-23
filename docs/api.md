@@ -53,15 +53,14 @@ Meal Plans
 Grocery List
 	•	GET /grocery-list
 
-Authentication (Planned)
+Authentication
 
-Authentication will likely include:
-	•	User registration
-	•	Login
-	•	Session or JWT-based authentication
-	•	Protected routes
+Authentication endpoints are implemented.
 
-Details will be added once implemented.
+See `/docs/auth.md` for:
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/me`
 
 ---
 

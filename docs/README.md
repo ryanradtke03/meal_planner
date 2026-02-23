@@ -8,6 +8,7 @@ This folder contains high-level system documentation to ensure architecture, API
 
 - [Architecture](./architecture.md)
 - [API](./api.md)
+- [Auth Endpoints](./auth.md)
 - [Web App](./web.md)
 - [Database](./db.md)
 - [Contributing](./contributing.md)
