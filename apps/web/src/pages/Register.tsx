@@ -31,17 +31,12 @@ export default function Register() {
 
       // Success → redirect
       navigate("/dashboard");
-<<<<<<< HEAD
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("Something went wrong");
       }
-=======
-    } catch (err: any) {
-      setError(err.message);
->>>>>>> 9bdd9df ((auth) added register page)
     } finally {
       setLoading(false);
     }
