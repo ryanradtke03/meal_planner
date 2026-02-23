@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
+import { clearAuthCookie, setAuthCookie } from "../auth/cookies";
 import { loginUser, registerUser } from "../services/auth";
 
 const registerSchema = z.object({
@@ -43,7 +44,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     const result = await loginUser(parsed);
 
-    res.cookie(result.cookie.name, result.cookie.value, result.cookie.options);
+    setAuthCookie(res, result.cookie.value);
 
     return res.status(200).json({
       user: result.user,
@@ -72,4 +73,9 @@ export async function me(req: Request, res: Response, next: NextFunction) {
   } catch (err) {
     return next(err);
   }
+}
+
+export async function logout(_req: Request, res: Response) {
+  clearAuthCookie(res);
+  return res.status(204).send();
 }
