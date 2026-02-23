@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { setAuthCookie } from "../auth/cookies";
+import { clearAuthCookie, setAuthCookie } from "../auth/cookies";
 import { loginUser, registerUser } from "../services/auth";
 
 const registerSchema = z.object({
@@ -73,4 +73,9 @@ export async function me(req: Request, res: Response, next: NextFunction) {
   } catch (err) {
     return next(err);
   }
+}
+
+export async function logout(_req: Request, res: Response) {
+  clearAuthCookie(res);
+  return res.status(204).send();
 }
