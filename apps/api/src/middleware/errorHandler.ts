@@ -1,5 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 
+// example to use in controllers:
+//  throw Object.assign(new Error("Message"), { status: ### });
+
 type ErrorLike = {
   status?: number;
   message?: string;
