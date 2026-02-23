@@ -1,4 +1,5 @@
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
@@ -7,6 +8,16 @@ import healthRouter from "./routes/health";
 
 export function createApp() {
   const app = express();
+
+  app.use(
+    cors({
+      origin: ["http://localhost:5173"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      // set this to true ONLY if you're using cookies for auth
+      credentials: true,
+    }),
+  );
 
   app.use(express.json());
   app.use(cookieParser());
