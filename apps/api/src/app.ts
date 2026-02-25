@@ -5,6 +5,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
 import authRoutes from "./routes/auth";
 import healthRouter from "./routes/health";
+import recipiesRouter from "./routes/recipie";
 
 export function createApp() {
   const app = express();
@@ -23,6 +24,7 @@ export function createApp() {
   app.use(cookieParser());
 
   app.use(healthRouter);
+  app.use("/recipies", recipiesRouter);
   app.use("/auth", authRoutes);
 
   app.use(notFound);
