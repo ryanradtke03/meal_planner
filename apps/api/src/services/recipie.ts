@@ -1,6 +1,10 @@
 import { prisma } from "../db/prisma";
+import type { CreateRecipeInput } from "../schemas/recipie";
 
-export async function createRecipeService(userId: string, data: any) {
+export async function createRecipeService(
+  userId: string,
+  data: CreateRecipeInput,
+) {
   return prisma.recipe.create({
     data: {
       title: data.title,
