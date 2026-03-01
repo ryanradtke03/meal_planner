@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   namespace Express {
@@ -8,5 +8,16 @@ declare global {
         email: string;
       };
     }
+  }
+}
+
+import "express-serve-static-core";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: {
+      id: string;
+      email?: string;
+    };
   }
 }
