@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { RecipeModal } from "../components/RecipieModal";
 import type { Recipe, RecipeListItem } from "../types/recipies";
+import logger from "../utils/logger";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,7 @@ export default function Dashboard() {
 
       const data: Recipe = await res.json();
       setSelectedRecipe(data);
+      logger.log("Fetched recipe info:", { data });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -84,9 +86,15 @@ export default function Dashboard() {
         <p className="text-lg text-center">
           Plan your meals, track your ingredients, and cook delicious dishes!
         </p>
-
-        {loading && <div className="text-center mt-4">Loading...</div>}
-
+        {loading && <div className="text-center mt-4">Loading...</div>}# Button
+        to Create a New Recipe
+        <div className="flex justify-center mt-6">
+          <button>
+            <div className="rounded-xl border border-green-500 bg-green-600 px-6 py-4 text-white">
+              Create New Recipe
+            </div>
+          </button>
+        </div>
         {recipes.length > 0 &&
           recipes.map((recipe) => (
             <button

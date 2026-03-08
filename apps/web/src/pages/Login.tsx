@@ -25,7 +25,6 @@ export default function Login() {
       });
 
       const data = await res.json();
-      console.log(data);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       if (!res.ok) {
