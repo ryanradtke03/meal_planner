@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { createRecipeService } from "../services/recipie";
+import { recipeService } from "../services/recipie";
 
 const createRecipeSchema = z.object({
   title: z.string().min(1),
@@ -12,14 +12,14 @@ const createRecipeSchema = z.object({
     z.object({
       name: z.string().min(1),
       amount: z.string().min(1),
-    })
+    }),
   ),
   steps: z.array(
     z.object({
       order: z.number().int(),
       title: z.string().optional(),
       instructions: z.string().min(1),
-    })
+    }),
   ),
 });
 
@@ -32,7 +32,7 @@ export async function createRecipe(req: Request, res: Response) {
   try {
     const parsed = createRecipeSchema.parse(req.body);
 
-    const recipe = await createRecipeService(userId, parsed);
+    const recipe = await recipeService.createRecipeService(userId, parsed);
 
     return res.status(201).json(recipe);
   } catch (err: unknown) {
@@ -43,6 +43,128 @@ export async function createRecipe(req: Request, res: Response) {
       });
     }
 
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}
+
+export async function listRecipies(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    const recipes = await recipeService.listRecipes(userId);
+
+    if (!recipes) {
+      return res.status(404).json({ error: "No recipes found" });
+    }
+
+    return res.status(200).json(recipes);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}
+
+export async function getRecipieById(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recipeId = req.params.id;
+
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
+
+  try {
+    const recipe = await recipeService.getRecipeById(userId, recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    return res.status(200).json(recipe);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}
+
+export async function updateRecipie(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recipeId = req.params.id;
+
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
+
+  const data = req.body as Partial<z.infer<typeof createRecipeSchema>>;
+  if (!data || Object.keys(data).length === 0) {
+    return res
+      .status(400)
+      .json({ error: "At least one field is required to update" });
+  }
+
+  try {
+    const recipe = await recipeService.getRecipeById(userId, recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Implementation for updating the recipe would go here
+    const updated = await recipeService.updateRecipie(userId, recipeId, data);
+
+    return res.status(200).json(updated);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}
+
+export async function deleteRecipie(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recipeId = req.params.id;
+
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
+
+  try {
+    const recipe = await recipeService.getRecipeById(userId, recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    await recipeService.deleteRecipie(userId, recipeId);
+
+    return res.status(204).send();
+  } catch (err: unknown) {
     if (err instanceof Error) {
       return res.status(500).json({ error: err.message });
     }
