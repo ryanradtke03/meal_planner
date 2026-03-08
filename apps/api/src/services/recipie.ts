@@ -81,4 +81,16 @@ export const recipeService = {
       },
     });
   },
+
+  async deleteRecipie(userId: string, recipeId: string) {
+    return prisma.recipe.delete({
+      where: { id: recipeId, createdById: userId },
+      include: {
+        ingredients: true,
+        steps: {
+          orderBy: { order: "asc" },
+        },
+      },
+    });
+  },
 };

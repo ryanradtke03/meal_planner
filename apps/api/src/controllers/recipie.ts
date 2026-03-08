@@ -141,3 +141,34 @@ export async function updateRecipie(req: Request, res: Response) {
     return res.status(500).json({ error: "Unknown error" });
   }
 }
+
+export async function deleteRecipie(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recipeId = req.params.id;
+
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
+
+  try {
+    const recipe = await recipeService.getRecipeById(userId, recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    await recipeService.deleteRecipie(userId, recipeId);
+
+    return res.status(204).send();
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}

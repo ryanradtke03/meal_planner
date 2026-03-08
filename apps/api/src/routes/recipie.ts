@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createRecipe,
+  deleteRecipie,
   getRecipieById,
   listRecipies,
   updateRecipie,
@@ -18,5 +19,6 @@ router.post("/", requireAuth, createRecipe);
 router.get("/list", requireAuth, listRecipies);
 router.get("/:id", requireAuth, getRecipieById);
 router.put("/:id", requireAuth, updateRecipie);
+router.delete("/:id", requireAuth, deleteRecipie);
 
 export default router;
