@@ -36,4 +36,16 @@ export const recipeService = {
       take: 10,
     });
   },
+
+  async getRecipeById(userId: string, recipeId: string) {
+    return prisma.recipe.findUnique({
+      where: { id: recipeId, createdById: userId },
+      include: {
+        ingredients: true,
+        steps: {
+          orderBy: { order: "asc" },
+        },
+      },
+    });
+  },
 };

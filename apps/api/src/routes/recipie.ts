@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createRecipe, listRecipies } from "../controllers/recipie";
+import {
+  createRecipe,
+  getRecipieById,
+  listRecipies,
+} from "../controllers/recipie";
 import { requireAuth } from "../middleware/requireAuth";
 
 const router = Router();
@@ -11,5 +15,6 @@ const router = Router();
 
 router.post("/", requireAuth, createRecipe);
 router.get("/list", requireAuth, listRecipies);
+router.get("/:id", requireAuth, getRecipieById);
 
 export default router;
