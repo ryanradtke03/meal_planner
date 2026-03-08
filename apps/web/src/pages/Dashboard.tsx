@@ -12,10 +12,6 @@ export default function Dashboard() {
     fetchRecipes();
   }, []);
 
-  useEffect(() => {
-    console.log("Recipes state updated:", recipes);
-  }, [recipes]);
-
   async function fetchRecipieInfo(recipeId: string) {
     try {
       const res = await fetch(
@@ -35,7 +31,6 @@ export default function Dashboard() {
 
       const data: Recipe = await res.json();
       setSelectedRecipe(data);
-      console.log("Selected Recipe:", data);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

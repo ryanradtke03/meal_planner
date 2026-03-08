@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext<{
-  user: any;
+  user: unknown;
   loading: boolean;
-  login: (userData: any) => void;
+  login: (userData: unknown) => void;
   logout: () => void;
 }>({
   user: null,
@@ -13,7 +13,7 @@ const AuthContext = createContext<{
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
