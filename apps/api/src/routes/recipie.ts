@@ -3,6 +3,7 @@ import {
   createRecipe,
   getRecipieById,
   listRecipies,
+  updateRecipie,
 } from "../controllers/recipie";
 import { requireAuth } from "../middleware/requireAuth";
 
@@ -16,5 +17,6 @@ const router = Router();
 router.post("/", requireAuth, createRecipe);
 router.get("/list", requireAuth, listRecipies);
 router.get("/:id", requireAuth, getRecipieById);
+router.put("/:id", requireAuth, updateRecipie);
 
 export default router;

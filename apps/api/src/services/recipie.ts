@@ -48,4 +48,37 @@ export const recipeService = {
       },
     });
   },
+
+  async updateRecipie(
+    userId: string,
+    recipeId: string,
+    data: Partial<CreateRecipeInput>,
+  ) {
+    // Find existing recipe to ensure it belongs to the user
+    const existing = await prisma.recipe.findUnique({
+      where: { id: recipeId, createdById: userId },
+    });
+
+    if (!existing) {
+      throw new Error("Recipe not found or unauthorized");
+    }
+
+    // Update the recipe
+    return prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        title: data.title ?? existing.title,
+        description: data.description ?? existing.description,
+        servings: data.servings ?? existing.servings,
+        prepTimeMin: data.prepTimeMin ?? existing.prepTimeMin,
+        cookTimeMin: data.cookTimeMin ?? existing.cookTimeMin,
+      },
+      include: {
+        ingredients: true,
+        steps: {
+          orderBy: { order: "asc" },
+        },
+      },
+    });
+  },
 };

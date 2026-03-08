@@ -102,3 +102,42 @@ export async function getRecipieById(req: Request, res: Response) {
     return res.status(500).json({ error: "Unknown error" });
   }
 }
+
+export async function updateRecipie(req: Request, res: Response) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recipeId = req.params.id;
+
+  if (!recipeId) {
+    return res.status(400).json({ error: "Recipe ID is required" });
+  }
+
+  const data = req.body as Partial<z.infer<typeof createRecipeSchema>>;
+  if (!data || Object.keys(data).length === 0) {
+    return res
+      .status(400)
+      .json({ error: "At least one field is required to update" });
+  }
+
+  try {
+    const recipe = await recipeService.getRecipeById(userId, recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Implementation for updating the recipe would go here
+    const updated = await recipeService.updateRecipie(userId, recipeId, data);
+
+    return res.status(200).json(updated);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Unknown error" });
+  }
+}
