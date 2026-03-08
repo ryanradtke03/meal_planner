@@ -20,13 +20,13 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
       console.log(data);
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.token);
 
       if (!res.ok) {
         throw new Error(data.message || "Login Failed!");
