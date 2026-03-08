@@ -4,6 +4,11 @@ export default function Home() {
       <div className="text-4xl font-bold text-center mb-5 text-white">
         Welcome to Meal Planner!
       </div>
+      <div>
+        <p className="text-lg text-center">
+          Plan your meals, track your ingredients, and cook delicious dishes!
+        </p>
+      </div>
     </main>
   );
 }
