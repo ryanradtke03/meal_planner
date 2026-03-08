@@ -40,3 +40,16 @@ export type Recipe = {
   ingredients: RecipeIngredient[];
   steps: RecipeStep[];
 };
+
+export type Ingredient = { name: string; amount: string };
+export type Step = { title: string; instructions: string };
+
+export type RecipeFormData = {
+  title: string;
+  description: string;
+  servings: number;
+  prepTimeMin: number;
+  cookTimeMin: number;
+  ingredients: Ingredient[];
+  steps: Step[];
+};

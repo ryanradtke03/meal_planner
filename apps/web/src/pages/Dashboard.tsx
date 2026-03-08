@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { RecipeModal } from "../components/RecipieModal";
-import type { Recipe, RecipeListItem } from "../types/recipies";
+import { CreateModal, RecipeModal } from "../components/RecipieModal";
+import type { Recipe, RecipeFormData, RecipeListItem } from "../types/recipies";
+import logger from "../utils/logger";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recipes, setRecipes] = useState<RecipeListItem[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     fetchRecipes();
@@ -31,6 +33,7 @@ export default function Dashboard() {
 
       const data: Recipe = await res.json();
       setSelectedRecipe(data);
+      logger.log("Fetched recipe info:", { data });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -67,6 +70,61 @@ export default function Dashboard() {
     }
   }
 
+  const handleCreateRecipe = async (formData: RecipeFormData) => {
+    logger.log("Creating recipe with data:", formData);
+
+    const payload = {
+      ...formData,
+      steps: formData.steps.map((step, i) => ({ ...step, order: i + 1 })),
+    };
+
+    logger.log("Transformed payload for API:", payload);
+
+    // Validate form data before sending request
+    if (!payload.title.trim()) {
+      setError("Title is required");
+      return;
+    }
+    if (payload.ingredients.length === 0) {
+      setError("At least one ingredient is required");
+      return;
+    }
+    if (payload.steps.length === 0) {
+      setError("At least one step is required");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/recipies`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorBody = await res.json(); // or res.text() if not JSON
+        logger.error("API error:", res.status, errorBody);
+        throw new Error("Failed to create recipe!");
+      }
+
+      const data: Recipe = await res.json();
+      logger.log("Recipe created successfully:", { data });
+
+      setRecipes((prev) => [data, ...prev]);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+
+    setShowCreateModal(false);
+  };
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-red-500">
@@ -84,9 +142,15 @@ export default function Dashboard() {
         <p className="text-lg text-center">
           Plan your meals, track your ingredients, and cook delicious dishes!
         </p>
-
-        {loading && <div className="text-center mt-4">Loading...</div>}
-
+        {loading && <div className="text-center mt-4">Loading...</div>}# Button
+        to Create a New Recipe
+        <div className="flex justify-center mt-6">
+          <button onClick={() => setShowCreateModal(true)}>
+            <div className="rounded-xl border border-green-500 bg-green-600 px-6 py-4 text-white">
+              Create New Recipe
+            </div>
+          </button>
+        </div>
         {recipes.length > 0 &&
           recipes.map((recipe) => (
             <button
@@ -111,6 +175,13 @@ export default function Dashboard() {
             </button>
           ))}
       </div>
+
+      {showCreateModal && (
+        <CreateModal
+          onSubmit={handleCreateRecipe}
+          onClose={() => setShowCreateModal(false)}
+        />
+      )}
 
       <RecipeModal
         recipe={selectedRecipe}
