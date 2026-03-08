@@ -24,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  const login = (userData: any) => {
+  const login = (userData: unknown) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
