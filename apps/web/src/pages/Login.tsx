@@ -47,7 +47,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-white pt-8">
-      <div className="w-[410px] bg-white border border-gray-300 rounded shadow-md px-6 pt-6 pb-5">
+      <div className="w-96 bg-white border border-gray-300 rounded shadow-md px-6 pt-6 pb-5">
         <h1 className="text-4xl font-bold text-center mb-5 text-black">
           Log in
         </h1>
